@@ -1,6 +1,10 @@
-import tkinter as tk 
+import tkinter as tk
+from tkinter import messagebox
+from tkinter import filedialog as fd
+
+from tkcalendar import Calendar 
+
 import customtkinter as ctk
-from tkcalendar import Calendar
 
 import requests
 
@@ -8,9 +12,12 @@ from PIL import Image
 
 import os
 
+from crud import * 
+
+# Constants
 PATH = os.path.dirname(os.path.realpath(__file__))
 
-class MyTabView(ctk.CTkTabview):
+class TabFormInfo(ctk.CTkTabview):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
 
@@ -19,10 +26,6 @@ class MyTabView(ctk.CTkTabview):
 
         # ======== add widgets on tabs ===========
         self.label = ctk.CTkLabel(master=self.tab("Embaixador do Rei"))
-      
-        # ====== create 2x2 grid system ==========
-        self.grid_rowconfigure((0, 1, 2), weight=1)
-        self.grid_columnconfigure(0, weight=1)
 
         # ============ frame_top_info ============
         self.frame_top_info = ctk.CTkFrame(master=self.tab("Embaixador do Rei"))
@@ -32,27 +35,30 @@ class MyTabView(ctk.CTkTabview):
         self.frame_top_info.rowconfigure((0, 1, 2, 3, 4, 5, 6, 7), weight=1)
         self.frame_top_info.columnconfigure((0, 1), weight=1)
 
-        # ======= Basic information form ========
+        # ======= Basic information form ========        
         self.label_informacoes = ctk.CTkLabel(master=self.frame_top_info, text="Informações Básicas")
         self.label_informacoes.grid(row=0, column=0, columnspan=2, pady=10, padx=0, sticky="nwse")
 
+        # Name 
         self.label_nome = ctk.CTkLabel(master=self.frame_top_info, text="Nome Completo:")
         self.label_nome.grid(row=1, column=0, pady=5, padx=10, sticky="w")
 
-        self.entry_nome = ctk.CTkEntry(master=self.frame_top_info, width=320)
-        self.entry_nome.grid(row=1, column=1, columnspan=2, pady=5, padx=15, sticky="ew")
+        TabFormInfo.entry_nome = ctk.CTkEntry(master=self.frame_top_info, width=320)
+        TabFormInfo.entry_nome.grid(row=1, column=1, columnspan=2, pady=5, padx=15, sticky="ew")
 
+        # Parents name
         self.label_resp = ctk.CTkLabel(master=self.frame_top_info, text="Nome do Responsável:")
         self.label_resp.grid(row=2, column=0, pady=5, padx=10, sticky="w")
 
-        self.entry_resp = ctk.CTkEntry(master=self.frame_top_info, width=320)
-        self.entry_resp.grid(row=2, column=1,  columnspan=2, pady=5, padx=15, sticky="ew")
+        TabFormInfo.entry_resp = ctk.CTkEntry(master=self.frame_top_info, width=320)
+        TabFormInfo.entry_resp.grid(row=2, column=1,  columnspan=2, pady=5, padx=15, sticky="ew")
 
+        # Adress information
         self.label_cep = ctk.CTkLabel(master=self.frame_top_info, text="CEP:")
         self.label_cep.grid(row=3, column=0, pady=5, padx=10, sticky="w")
 
-        self.entry_cep = ctk.CTkEntry(master=self.frame_top_info, width=145)
-        self.entry_cep.grid(row=3, column=1, pady=5, padx=15, sticky="w")
+        TabFormInfo.entry_cep = ctk.CTkEntry(master=self.frame_top_info, width=145)
+        TabFormInfo.entry_cep.grid(row=3, column=1, pady=5, padx=15, sticky="w")
         
         self.button_end = ctk.CTkButton(master=self.frame_top_info, width=125, text="Buscar endereço", command=lambda: self.find_localization())
         self.button_end.grid(row=3, column=1, pady=5, padx=15, sticky="e")
@@ -60,35 +66,36 @@ class MyTabView(ctk.CTkTabview):
         self.label_endereco = ctk.CTkLabel(master=self.frame_top_info, text="Endereço:")
         self.label_endereco.grid(row=4, column=0, pady=5, padx=10, sticky="w")
 
-        self.entry_logradouro = ctk.CTkEntry(master=self.frame_top_info, placeholder_text="Logradouro", width=265)
-        self.entry_logradouro.grid(row=4, column=1, pady=5, padx=15, sticky="w")
+        TabFormInfo.entry_logradouro = ctk.CTkEntry(master=self.frame_top_info, placeholder_text="Logradouro", width=265)
+        TabFormInfo.entry_logradouro.grid(row=4, column=1, pady=5, padx=15, sticky="w")
 
-        self.entry_numero = ctk.CTkEntry(master=self.frame_top_info, placeholder_text="Nº", width=30)
-        self.entry_numero.grid(row=4, column=1, pady=5, padx=15, sticky="e")
+        TabFormInfo.entry_numero = ctk.CTkEntry(master=self.frame_top_info, placeholder_text="Nº", width=30)
+        TabFormInfo.entry_numero.grid(row=4, column=1, pady=5, padx=15, sticky="e")
 
         self.label_bairro = ctk.CTkLabel(master=self.frame_top_info, text="Bairro:")
         self.label_bairro.grid(row=5, column=0, pady=5, padx=10, sticky="w")
 
-        self.entry_bairro = ctk.CTkEntry(master=self.frame_top_info, width=320)
-        self.entry_bairro.grid(row=5, column=1, pady=5, padx=15, sticky="ew")
+        TabFormInfo.entry_bairro = ctk.CTkEntry(master=self.frame_top_info, width=320)
+        TabFormInfo.entry_bairro.grid(row=5, column=1, pady=5, padx=15, sticky="ew")
 
         self.label_cidade = ctk.CTkLabel(master=self.frame_top_info, text="Cidade:")
         self.label_cidade.grid(row=6, column=0, pady=5, padx=10, sticky="w")
 
-        self.entry_cidade = ctk.CTkEntry(master=self.frame_top_info, width=265)
-        self.entry_cidade.grid(row=6, column=1, pady=5, padx=15, sticky="w")
+        TabFormInfo.entry_cidade = ctk.CTkEntry(master=self.frame_top_info, width=265)
+        TabFormInfo.entry_cidade.grid(row=6, column=1, pady=5, padx=15, sticky="w")
 
-        self.entry_UF = ctk.CTkEntry(master=self.frame_top_info, placeholder_text="UF", width=30)
-        self.entry_UF.grid(row=6, column=1, pady=5, padx=15, sticky="e")
+        TabFormInfo.entry_UF = ctk.CTkEntry(master=self.frame_top_info, placeholder_text="UF", width=30)
+        TabFormInfo.entry_UF.grid(row=6, column=1, pady=5, padx=15, sticky="e")
 
         self.label_complemento = ctk.CTkLabel(master=self.frame_top_info, text="Complemento:")
         self.label_complemento.grid(row=7, column=0, pady=(5, 15), padx=10, sticky="w")
 
-        self.entry_complemento = ctk.CTkEntry(master=self.frame_top_info, width=205)
-        self.entry_complemento.grid(row=7, column=1, pady=(5, 15), padx=15, sticky="w")
+        TabFormInfo.entry_complemento = ctk.CTkEntry(master=self.frame_top_info, width=205)
+        TabFormInfo.entry_complemento.grid(row=7, column=1, pady=(5, 15), padx=15, sticky="w")
 
         self.button_cep = ctk.CTkButton(master=self.frame_top_info, width=80, text="Buscar CEP", command=lambda: self.find_cep())
         self.button_cep.grid(row=7, column=1, pady=(5, 15), padx=15, sticky="e")
+            
 
         # ============ frame_bottom_date ============
         self.frame_bottom_date = ctk.CTkFrame(master=self.tab("Embaixador do Rei"))
@@ -98,20 +105,22 @@ class MyTabView(ctk.CTkTabview):
         self.frame_bottom_date.rowconfigure((0, 1), weight=1)
         self.frame_bottom_date.columnconfigure((0, 1, 2), weight=1)
 
-        # ============= Date label ==================
+        # ============= Date label ==================       
         self.label_date = ctk.CTkLabel(master=self.frame_bottom_date, text="Data de Nascimento")
         self.label_date.grid(row=0, column=0, columnspan=3, pady=(15, 5), padx=0, sticky="nswe")
 
+        # Birth date
         self.label_nasc = ctk.CTkLabel(master=self.frame_bottom_date, text="Data de Nascimento:")
         self.label_nasc.grid(row=1, column=0, pady=(5, 15), padx=10, sticky="w")
 
-        self.entry_nasc = ctk.CTkEntry(master=self.frame_bottom_date, width=150, state="disabled")
-        self.entry_nasc.grid(row=1, column=1, pady=(5, 15), padx=10, sticky="w")
+        TabFormInfo.entry_nasc = ctk.CTkEntry(master=self.frame_bottom_date, width=150, state="disabled")
+        TabFormInfo.entry_nasc.grid(row=1, column=1, pady=(5, 15), padx=10, sticky="w")
 
         self.button_date = ctk.CTkButton(master=self.frame_bottom_date, width=120, text="Selecionar Data", command=lambda: self.create_toplevel_date("nascimento"))
         self.button_date.grid(row=1, column=2, pady=(5, 15), padx=15, sticky="e")
 
-         # ============ frame_bottom_tel ============
+        # ============ frame_bottom_tel ============
+        
         self.frame_bottom_tel = ctk.CTkFrame(master=self.tab("Embaixador do Rei"))
         self.frame_bottom_tel.grid(row=2, column=0, sticky="nwse", padx=20, pady=(10, 20))
 
@@ -119,24 +128,26 @@ class MyTabView(ctk.CTkTabview):
         self.frame_bottom_tel.rowconfigure((0, 1, 2), weight=1)
         self.frame_bottom_tel.columnconfigure((0, 1, 2), weight=1)
 
-        # ============= Date label ==================
+        # ============= Telephone label ==================        
         self.label_tel = ctk.CTkLabel(master=self.frame_bottom_tel, text="Telefones Para Contato")
         self.label_tel.grid(row=0, column=0, columnspan=3, pady=(15, 5), padx=0, sticky="nswe")
 
+        # Parents telephone
         self.label_tel_resp = ctk.CTkLabel(master=self.frame_bottom_tel, text="Tel. do Responsável:")
         self.label_tel_resp.grid(row=1, column=0, pady=(5, 15), padx=10, sticky="w")
 
-        self.entry_tel_resp = ctk.CTkEntry(master=self.frame_bottom_tel, width=150)
-        self.entry_tel_resp.grid(row=1, column=1, pady=(5, 15), padx=10, sticky="w")       
+        TabFormInfo.entry_tel_resp = ctk.CTkEntry(master=self.frame_bottom_tel, width=150)
+        TabFormInfo.entry_tel_resp.grid(row=1, column=1, pady=(5, 15), padx=10, sticky="w")       
 
         self.combobox_tel = ctk.CTkOptionMenu(master=self.frame_bottom_tel, values=["Celular", "Fixo"])
         self.combobox_tel.grid(row=1, column=2, pady=(5, 15), padx=15, sticky="e")
 
+        # telephone
         self.label_tel_ER = ctk.CTkLabel(master=self.frame_bottom_tel, text="Tel. do Embaixador do Rei:")
         self.label_tel_ER.grid(row=2, column=0, pady=(5, 15), padx=10, sticky="w")
 
-        self.entry_tel_ER = ctk.CTkEntry(master=self.frame_bottom_tel, width=150)
-        self.entry_tel_ER.grid(row=2, column=1, pady=(5, 15), padx=10, sticky="w")       
+        TabFormInfo.entry_tel_ER = ctk.CTkEntry(master=self.frame_bottom_tel, width=150)
+        TabFormInfo.entry_tel_ER.grid(row=2, column=1, pady=(5, 15), padx=10, sticky="w")       
 
         self.combobox_tel_ER = ctk.CTkOptionMenu(master=self.frame_bottom_tel, values=["Celular", "Fixo"])
         self.combobox_tel_ER.grid(row=2, column=2, pady=(5, 15), padx=15, sticky="e")
@@ -162,7 +173,7 @@ class MyTabView(ctk.CTkTabview):
         self.label_igreja = ctk.CTkLabel(master=self.frame_church_info, text="É membro de alguma igreja? Se sim, qual?")
         self.label_igreja.grid(row=1, column=0, pady=5, padx=15, sticky="w")
         
-        def check_event(campo):
+        def check_church_event(campo):
    
             state_var_igreja = check_igreja.get()
             state_var_batismo = check_batismo.get()  
@@ -180,7 +191,7 @@ class MyTabView(ctk.CTkTabview):
                 self.entry_atividades_igreja.configure(state=state_var_atividades)                
               
         check_igreja = tk.StringVar()
-        self.check_box_igreja = ctk.CTkCheckBox(master=self.frame_church_info, text="", variable=check_igreja, command=lambda: check_event("igreja"), onvalue="normal", offvalue="disabled")
+        self.check_box_igreja = ctk.CTkCheckBox(master=self.frame_church_info, text="", variable=check_igreja, command=lambda: check_church_event("igreja"), onvalue="normal", offvalue="disabled")
         self.check_box_igreja.grid(row=1, column=1, pady=5, padx=15, sticky="w")
         self.check_box_igreja.deselect()
                        
@@ -191,7 +202,7 @@ class MyTabView(ctk.CTkTabview):
         self.label_batizado.grid(row=2, column=0, pady=5, padx=15, sticky="w")
     
         check_batismo = tk.StringVar()
-        self.check_box_batizado = ctk.CTkCheckBox(master=self.frame_church_info, text="", variable=check_batismo, command=lambda: check_event("batismo"), onvalue="normal", offvalue="disabled")
+        self.check_box_batizado = ctk.CTkCheckBox(master=self.frame_church_info, text="", variable=check_batismo, command=lambda: check_church_event("batismo"), onvalue="normal", offvalue="disabled")
         self.check_box_batizado.grid(row=2, column=1, pady=5, padx=15, sticky="w")
         self.check_box_batizado.deselect()
 
@@ -217,7 +228,7 @@ class MyTabView(ctk.CTkTabview):
         self.label_atividades.grid(row=5, column=0, columnspan=2, pady=5, padx=15, sticky="w")
 
         check_atividades = tk.StringVar()
-        self.check_box_atividades = ctk.CTkCheckBox(master=self.frame_church_info, text="", variable=check_atividades, command=lambda: check_event("atividades"), onvalue="normal", offvalue="disabled")
+        self.check_box_atividades = ctk.CTkCheckBox(master=self.frame_church_info, text="", variable=check_atividades, command=lambda: check_church_event("atividades"), onvalue="normal", offvalue="disabled")
         self.check_box_atividades.grid(row=6, column=0, pady=5, padx=15, sticky="w")
         self.check_box_atividades.deselect()
         
@@ -290,11 +301,12 @@ class MyTabView(ctk.CTkTabview):
         self.textbox = ctk.CTkTextbox(master=self.frame_organization_info)
         self.textbox.grid(row=6, column=0, columnspan=3, padx=20, pady=(5, 20), sticky="nsew")
 
+    # ========== Functions - Class Tabview ===========
+
     # =============== Find Local With CEP ============ 
     def find_localization(self):
 
         text = self.entry_cep.get()
-
         text = text.replace("-", "").replace(".", "").replace(" ", "")
     
         link = requests.get(f'https://viacep.com.br/ws/{text}/json/')
@@ -418,7 +430,8 @@ class MyTabView(ctk.CTkTabview):
             self.entry_data_formatura.insert(0, new_date)
             self.entry_data_formatura.configure(state="disabled")
             
-        date_window.destroy()  
+        date_window.destroy()
+    
 
 class Sidebar(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
@@ -430,7 +443,7 @@ class Sidebar(ctk.CTkFrame):
         
         self.add_user_image = ctk.CTkImage(Image.open(PATH + "/images/add-user.png"), size=(28, 28))
         self.cancel_image = ctk.CTkImage(Image.open(PATH + "/images/cancel.png"), size=(28, 28))
-
+        self.photo_icon = ctk.CTkImage(Image.open(PATH + "/images/user.png"), size=(28, 28))
         self.insignia_image = ctk.CTkImage(Image.open(PATH + "/images/Logo_ER_QIBN.png"), size=(170, 170))
 
         font_title = ctk.CTkFont(family="Segoe UI", size=18, weight="normal")
@@ -440,24 +453,78 @@ class Sidebar(ctk.CTkFrame):
         self.label = ctk.CTkLabel(self, text="Cadastrar ER", height=30, corner_radius=6, fg_color=("gray70", "gray25"), font=font_title)
         self.label.grid(row=0, column=0, padx=20, pady=10, sticky="ew")
 
+        self.button_photo = ctk.CTkButton(master=self, image=self.photo_icon, text="Selecionar foto", width=100, height=80, border_width=2, corner_radius=10, compound="bottom", 
+                                                       border_color="gray50", fg_color=("gray70", "gray25"), hover_color="gray25", command=self.select_image)
+        self.button_photo.grid(row=1, column=0, padx=20, pady=10, sticky="ew")
+
         self.button_register = ctk.CTkButton(master=self, image=self.add_user_image, text="Cadastrar", width=100, height=80, border_width=2,
                                                         corner_radius=10, compound="bottom", border_color="gray50", fg_color=("gray70", "gray25"),
-                                                        hover_color="gray25", command=self.button_function)
-        self.button_register.grid(row=1, column=0, padx=20, pady=10, sticky="ew")
+                                                        hover_color="gray25", command=self.button_register)
+        self.button_register.grid(row=2, column=0, padx=20, pady=10, sticky="ew")
 
-        self.button_clean = ctk.CTkButton(master=self, image=self.cancel_image, text="Cancelar", width=100, height=80, border_width=2,
+        Sidebar.button_clean = ctk.CTkButton(master=self, image=self.cancel_image, text="Cancelar", width=100, height=80, border_width=2,
                                                         corner_radius=10, compound="bottom", border_color="gray50", fg_color=("gray70", "gray25"),
-                                                        hover_color="gray25", command=self.button_function)
-        self.button_clean.grid(row=2, column=0, padx=20, pady=10, sticky="ew")
+                                                        hover_color="gray25")
+        Sidebar.button_clean.grid(row=3, column=0, padx=20, pady=10, sticky="ew")
 
         self.insignia_label = ctk.CTkLabel(self, image=self.insignia_image, text="")
         self.insignia_label.grid(row=7, column=0, padx=0, pady=0, sticky="sew")
 
         self.insignia_label = ctk.CTkLabel(self, text="Embaixada\nPr. Edson P. Messor", font=font_name)
         self.insignia_label.grid(row=8, column=0, padx=20, pady=(0, 20), sticky="nsew")
-    
-    def button_function(self):
-        print("button pressed")
+
+    # ========== Functions - Class Sidebar ===========
+
+    def select_image(self):
+
+        global image_path               
+        image_path = fd.askopenfilename(filetypes=[('JPEG Files', '.jpg .jpeg'), ('PNG Files', '.png')])
+                
+    def button_register(self):   
+        
+        # User information
+        nome_ER = TabFormInfo.entry_nome.get()
+        nome_resp = TabFormInfo.entry_resp.get()
+        data_nasc = TabFormInfo.entry_nasc.get()
+        tel_resp = TabFormInfo.entry_tel_resp.get()
+        tel_ER = TabFormInfo.entry_tel_ER.get()
+        
+        # Adress information
+        cep = TabFormInfo.entry_cep.get()
+        logradouro = TabFormInfo.entry_logradouro.get()
+        numero = TabFormInfo.entry_numero.get()
+        bairro = TabFormInfo.entry_bairro.get()
+        cidade = TabFormInfo.entry_cidade.get()
+        estado = TabFormInfo.entry_UF.get()
+        complemento = TabFormInfo.entry_complemento.get()
+
+        # Photo path verification
+        try:
+            image = image_path
+        except NameError:
+            messagebox.showerror('Erro', 'Preencha todos os campos e selecione uma imagem.')    
+            return
+        
+        # Verification: UF, cidade, complemento and tel_ER
+        if estado == '':
+            estado = 'RJ'        
+        if cidade == '':
+            cidade = 'Nilópolis'
+        if complemento == '':
+            complemento = 'Não informado'
+        if tel_ER == '':
+            tel_ER = '99999-9999'        
+
+        # List information
+        list_basic_info = [nome_ER, nome_resp, data_nasc, tel_resp, tel_ER, cep, logradouro, numero, bairro, cidade, estado, complemento, image]         
+        for i in list_basic_info:
+            if i=='':
+                messagebox.showerror('Erro', 'Preencha todos os campos e selecione uma imagem.')
+                return
+        
+        inserir_form(list_basic_info)
+        messagebox.showinfo('Sucesso', 'Os dados foram inseridos com sucesso')
+
 
 class App(ctk.CTk):
     def __init__(self):
@@ -465,11 +532,12 @@ class App(ctk.CTk):
               
         self.title("Cadastro dos ER")
 
-        self.tab_view = MyTabView(master=self)
+        self.tab_view = TabFormInfo(master=self)
         self.tab_view.grid(row=0, column=1, padx=20, pady=20, sticky="nsew")
 
         self.sidebar_frame = Sidebar(master=self)
         self.sidebar_frame.grid(row=0, column=0, padx=20, pady=20, sticky="nsew")
+        
 
 app = App()
 app.mainloop()
