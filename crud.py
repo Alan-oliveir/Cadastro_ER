@@ -12,14 +12,7 @@ def create():
         if list_table == []:
             cur.execute("CREATE TABLE Embaixador (id INTEGER PRIMARY KEY AUTOINCREMENT, nome_ER TEXT, nome_resp TEXT, data_nasc DATE, tel_resp TEXT, tel_ER TEXT, cep INTEGER, logradouro TEXT, numero INTEGER, bairro TEXT, cidade TEXT, estado TEXT, complemento TEXT, image TEXT)")
 
-'''# Inserir inventorio
-def inserir_form(i):
-    with con:
-        cur = con.cursor()
-        query = "INSERT INTO Embaixador (nome_ER, nome_resp, data_nasc, tel_resp, tel_ER, cep, logradouro, numero, bairro, cidade, estado, complemento, image) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)"
-        cur.execute(query, i)'''
-
-# Inserir inventorio
+# Inserir
 def inserir_form(i):
     create()
     with con:
