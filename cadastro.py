@@ -1,16 +1,12 @@
+import os
+import requests
+from PIL import Image
+
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import filedialog as fd
-
-from tkcalendar import Calendar 
-
+from tkcalendar import Calendar
 import customtkinter as ctk
-
-import requests
-
-from PIL import Image
-
-import os
 
 from crud import * 
 
@@ -20,7 +16,7 @@ PATH = os.path.dirname(os.path.realpath(__file__))
 class TabFormInfo(ctk.CTkTabview):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
-
+        
         # ========== create tab 1 - ER ===========
         self.add("Embaixador do Rei")        
 
@@ -94,8 +90,7 @@ class TabFormInfo(ctk.CTkTabview):
         TabFormInfo.entry_complemento.grid(row=7, column=1, pady=(5, 15), padx=15, sticky="w")
 
         self.button_cep = ctk.CTkButton(master=self.frame_top_info, width=80, text="Buscar CEP", command=lambda: self.find_cep())
-        self.button_cep.grid(row=7, column=1, pady=(5, 15), padx=15, sticky="e")
-            
+        self.button_cep.grid(row=7, column=1, pady=(5, 15), padx=15, sticky="e")            
 
         # ============ frame_bottom_date ============
         self.frame_bottom_date = ctk.CTkFrame(master=self.tab("Embaixador do Rei"))
@@ -119,8 +114,7 @@ class TabFormInfo(ctk.CTkTabview):
         self.button_date = ctk.CTkButton(master=self.frame_bottom_date, width=120, text="Selecionar Data", command=lambda: self.create_toplevel_date("nascimento"))
         self.button_date.grid(row=1, column=2, pady=(5, 15), padx=15, sticky="e")
 
-        # ============ frame_bottom_tel ============
-        
+        # ============ frame_bottom_tel ============        
         self.frame_bottom_tel = ctk.CTkFrame(master=self.tab("Embaixador do Rei"))
         self.frame_bottom_tel.grid(row=2, column=0, sticky="nwse", padx=20, pady=(10, 20))
 
@@ -152,6 +146,7 @@ class TabFormInfo(ctk.CTkTabview):
         self.combobox_tel_ER = ctk.CTkOptionMenu(master=self.frame_bottom_tel, values=["Celular", "Fixo"])
         self.combobox_tel_ER.grid(row=2, column=2, pady=(5, 15), padx=15, sticky="e")
 
+        
         # ========== create tab 2 - Igreja ==========
         self.add("Igreja")
 
@@ -171,8 +166,69 @@ class TabFormInfo(ctk.CTkTabview):
         self.label_infoER.grid(row=0, column=0, columnspan=2, pady=10, padx=0, sticky="nwse")
 
         self.label_igreja = ctk.CTkLabel(master=self.frame_church_info, text="É membro de alguma igreja? Se sim, qual?")
-        self.label_igreja.grid(row=1, column=0, pady=5, padx=15, sticky="w")
+        self.label_igreja.grid(row=1, column=0, pady=5, padx=15, sticky="w")               
+              
+        check_igreja = tk.StringVar()
+        self.check_box_igreja = ctk.CTkCheckBox(master=self.frame_church_info, text="", variable=check_igreja, command=lambda: check_church_event("igreja"), onvalue="normal", offvalue="disabled")
+        self.check_box_igreja.grid(row=1, column=1, pady=5, padx=15, sticky="w")
+        self.check_box_igreja.deselect()
+                       
+        TabFormInfo.entry_igreja = ctk.CTkEntry(master=self.frame_church_info, width=240, state="disabled")
+        TabFormInfo.entry_igreja.grid(row=1, column=1, pady=5, padx=15, sticky="e")
+
+        # Batism
+        self.label_batizado = ctk.CTkLabel(master=self.frame_church_info, text="Foi batizado? Se sim, em qual igreja?")
+        self.label_batizado.grid(row=2, column=0, pady=5, padx=15, sticky="w")
+    
+        check_batismo = tk.StringVar()
+        TabFormInfo.check_box_batizado = ctk.CTkCheckBox(master=self.frame_church_info, text="", variable=check_batismo, command=lambda: check_church_event("batismo"), onvalue="normal", offvalue="disabled")
+        TabFormInfo.check_box_batizado.grid(row=2, column=1, pady=5, padx=15, sticky="w")
+        TabFormInfo.check_box_batizado.deselect()
+
+        TabFormInfo.entry_igreja_batismo = ctk.CTkEntry(master=self.frame_church_info, width=240, state="disabled")
+        TabFormInfo.entry_igreja_batismo.grid(row=2, column=1, pady=5, padx=15, sticky="e")
+
+        self.label_data_batismo = ctk.CTkLabel(master=self.frame_church_info, text="E qual a data do batismo?")
+        self.label_data_batismo.grid(row=3, column=0, pady=5, padx=15, sticky="w")
+
+        TabFormInfo.entry_data_batismo = ctk.CTkEntry(master=self.frame_church_info, width=130, state="disabled")
+        TabFormInfo.entry_data_batismo.grid(row=3, column=1, pady=5, padx=15, sticky="w")
+
+        self.button_data_batismo = ctk.CTkButton(master=self.frame_church_info, width=125, text="Selecionar Data", command=lambda: self.create_toplevel_date("batismo"), state="disabled")
+        self.button_data_batismo.grid(row=3, column=1, pady=5, padx=15, sticky="e") 
+
+        # EBD
+        self.label_EBD = ctk.CTkLabel(master=self.frame_church_info, text="Frequenta EBD? Se sim, em qual igreja?")
+        self.label_EBD.grid(row=4, column=0, pady=5, padx=15, sticky="w")
+
+        TabFormInfo.entry_EBD = ctk.CTkEntry(master=self.frame_church_info, width=280, state="normal")
+        TabFormInfo.entry_EBD.grid(row=4, column=1, pady=5, padx=15, sticky="e")
+
+        self.label_atividades = ctk.CTkLabel(master=self.frame_church_info,text="Participa de outras atividades/organizações?")
+        self.label_atividades.grid(row=5, column=0, columnspan=2, pady=5, padx=15, sticky="w")
+
+        # Activities
+        check_atividades = tk.StringVar()
+        self.check_box_atividades = ctk.CTkCheckBox(master=self.frame_church_info, text="", variable=check_atividades, command=lambda: check_church_event("atividades"), onvalue="normal", offvalue="disabled")
+        self.check_box_atividades.grid(row=6, column=0, pady=5, padx=15, sticky="w")
+        self.check_box_atividades.deselect()
         
+        TabFormInfo.combobox_atividades = ctk.CTkComboBox(master=self.frame_church_info, state="disabled", width=200, values=["Ministério Infantil", "Música", "Outros"])
+        TabFormInfo.combobox_atividades.grid(row=6, column=0, pady=5, padx=20, sticky="e")
+
+        self.label_atividades_igreja = ctk.CTkLabel(master=self.frame_church_info, text="Em qual igreja?")
+        self.label_atividades_igreja.grid(row=6, column=1, pady=5, padx=0, sticky="w")
+
+        TabFormInfo.entry_atividades_igreja = ctk.CTkEntry(master=self.frame_church_info, width=200, state="disabled")
+        TabFormInfo.entry_atividades_igreja.grid(row=6, column=1, pady=5, padx=15, sticky="e")
+
+        self.label_outros = ctk.CTkLabel(master=self.frame_church_info, text="Caso tenha selecionado outros, especifique:")
+        self.label_outros.grid(row=7, column=0, pady=5, padx=15, sticky="w")
+
+        TabFormInfo.textbox_church = ctk.CTkTextbox(master=self.frame_church_info, state="normal")
+        TabFormInfo.textbox_church.grid(row=8, column=0, columnspan=2, padx=20, pady=(15, 20), sticky="nsew")
+
+        # Function to check button event
         def check_church_event(campo):
    
             state_var_igreja = check_igreja.get()
@@ -188,65 +244,9 @@ class TabFormInfo(ctk.CTkTabview):
                
             if campo == "atividades":
                 self.combobox_atividades.configure(state=state_var_atividades)
-                self.entry_atividades_igreja.configure(state=state_var_atividades)                
-              
-        check_igreja = tk.StringVar()
-        self.check_box_igreja = ctk.CTkCheckBox(master=self.frame_church_info, text="", variable=check_igreja, command=lambda: check_church_event("igreja"), onvalue="normal", offvalue="disabled")
-        self.check_box_igreja.grid(row=1, column=1, pady=5, padx=15, sticky="w")
-        self.check_box_igreja.deselect()
-                       
-        self.entry_igreja = ctk.CTkEntry(master=self.frame_church_info, width=240, state="disabled")
-        self.entry_igreja.grid(row=1, column=1, pady=5, padx=15, sticky="e")
+                self.entry_atividades_igreja.configure(state=state_var_atividades)
 
-        self.label_batizado = ctk.CTkLabel(master=self.frame_church_info, text="Foi batizado? Se sim, em qual igreja?")
-        self.label_batizado.grid(row=2, column=0, pady=5, padx=15, sticky="w")
-    
-        check_batismo = tk.StringVar()
-        self.check_box_batizado = ctk.CTkCheckBox(master=self.frame_church_info, text="", variable=check_batismo, command=lambda: check_church_event("batismo"), onvalue="normal", offvalue="disabled")
-        self.check_box_batizado.grid(row=2, column=1, pady=5, padx=15, sticky="w")
-        self.check_box_batizado.deselect()
-
-        self.entry_igreja_batismo = ctk.CTkEntry(master=self.frame_church_info, width=240, state="disabled")
-        self.entry_igreja_batismo.grid(row=2, column=1, pady=5, padx=15, sticky="e")
-
-        self.label_data_batismo = ctk.CTkLabel(master=self.frame_church_info, text="E qual a data do batismo?")
-        self.label_data_batismo.grid(row=3, column=0, pady=5, padx=15, sticky="w")
-
-        self.entry_data_batismo = ctk.CTkEntry(master=self.frame_church_info, width=130, state="disabled")
-        self.entry_data_batismo.grid(row=3, column=1, pady=5, padx=15, sticky="w")
-
-        self.button_data_batismo = ctk.CTkButton(master=self.frame_church_info, width=125, text="Selecionar Data", command=lambda: self.create_toplevel_date("batismo"), state="disabled")
-        self.button_data_batismo.grid(row=3, column=1, pady=5, padx=15, sticky="e") 
-
-        self.label_EBD = ctk.CTkLabel(master=self.frame_church_info, text="Frequenta EBD? Se sim, em qual igreja?")
-        self.label_EBD.grid(row=4, column=0, pady=5, padx=15, sticky="w")
-
-        self.entry_EBD = ctk.CTkEntry(master=self.frame_church_info, width=280, state="normal")
-        self.entry_EBD.grid(row=4, column=1, pady=5, padx=15, sticky="e")
-
-        self.label_atividades = ctk.CTkLabel(master=self.frame_church_info,text="Participa de outras atividades/organizações?")
-        self.label_atividades.grid(row=5, column=0, columnspan=2, pady=5, padx=15, sticky="w")
-
-        check_atividades = tk.StringVar()
-        self.check_box_atividades = ctk.CTkCheckBox(master=self.frame_church_info, text="", variable=check_atividades, command=lambda: check_church_event("atividades"), onvalue="normal", offvalue="disabled")
-        self.check_box_atividades.grid(row=6, column=0, pady=5, padx=15, sticky="w")
-        self.check_box_atividades.deselect()
         
-        self.combobox_atividades = ctk.CTkComboBox(master=self.frame_church_info, state="disabled", width=200, values=["Ministério Infantil", "Música", "Outros"])
-        self.combobox_atividades.grid(row=6, column=0, pady=5, padx=20, sticky="e")
-
-        self.label_atividades_igreja = ctk.CTkLabel(master=self.frame_church_info, text="Em qual igreja?")
-        self.label_atividades_igreja.grid(row=6, column=1, pady=5, padx=0, sticky="w")
-
-        self.entry_atividades_igreja = ctk.CTkEntry(master=self.frame_church_info, width=200, state="disabled")
-        self.entry_atividades_igreja.grid(row=6, column=1, pady=5, padx=15, sticky="e")
-
-        self.label_outros = ctk.CTkLabel(master=self.frame_church_info, text="Caso tenha selecionado outros, especifique:")
-        self.label_outros.grid(row=7, column=0, pady=5, padx=15, sticky="w")
-
-        self.textbox = ctk.CTkTextbox(master=self.frame_church_info, state="normal")
-        self.textbox.grid(row=8, column=0, columnspan=2, padx=20, pady=(15, 20), sticky="nsew")
-
         # ======= create tab 3 - Organização ========
         self.add("Organização")
 
@@ -265,41 +265,46 @@ class TabFormInfo(ctk.CTkTabview):
         self.label_infoER = ctk.CTkLabel(master=self.frame_organization_info, text="Organização ER")
         self.label_infoER.grid(row=0, column=0, columnspan=3, pady=10, padx=0, sticky="nwse")
 
+        # Ingresso
         self.label_data_ingresso = ctk.CTkLabel(master=self.frame_organization_info, text="Frequenta as reuniões desde:")
         self.label_data_ingresso.grid(row=1, column=0, pady=5, padx=15, sticky="w")
 
-        self.entry_data_ingresso = ctk.CTkEntry(master=self.frame_organization_info, width=150, state="disabled")
-        self.entry_data_ingresso.grid(row=1, column=1, pady=5, padx=15, sticky="w")
+        TabFormInfo.entry_data_ingresso = ctk.CTkEntry(master=self.frame_organization_info, width=150, state="disabled")
+        TabFormInfo.entry_data_ingresso.grid(row=1, column=1, pady=5, padx=15, sticky="w")
 
         self.button_data_ingresso = ctk.CTkButton(master=self.frame_organization_info, width=135, text="Selecionar Data", command=lambda: self.create_toplevel_date("ingresso"))
         self.button_data_ingresso.grid(row=1, column=2, pady=5, padx=15, sticky="e") 
 
+        # Aclamação        
         self.label_data_aclamação = ctk.CTkLabel(master=self.frame_organization_info, text="É membro da embaixada desde:")
         self.label_data_aclamação.grid(row=2, column=0, pady=5, padx=15, sticky="w")
 
-        self.entry_data_aclamacao = ctk.CTkEntry(master=self.frame_organization_info, width=150, state="disabled")
-        self.entry_data_aclamacao.grid(row=2, column=1, pady=5, padx=15, sticky="w")
+        TabFormInfo.entry_data_aclamacao = ctk.CTkEntry(master=self.frame_organization_info, width=150, state="disabled")
+        TabFormInfo.entry_data_aclamacao.grid(row=2, column=1, pady=5, padx=15, sticky="w")
 
         self.button_data_aclamacao = ctk.CTkButton(master=self.frame_organization_info, width=135, text="Selecionar Data", command=lambda: self.create_toplevel_date("aclamacao"))
         self.button_data_aclamacao.grid(row=2, column=2, pady=5, padx=15, sticky="e") 
 
+        # Posto
         self.label_posto = ctk.CTkLabel(master=self.frame_organization_info, text="Posto do embaixador do Rei na organização:")
         self.label_posto.grid(row=3, column=0, columnspan=3, pady=5, padx=(15, 15), sticky="ew")
 
-        self.combobox = ctk.CTkComboBox(master=self.frame_organization_info,  width=165, values=["Embaixador Escudeiro", "Embaixador Arauto", "Embaixador Sênior", "Embaixador Emérito"])
-        self.combobox.grid(row=4, column=0, padx=20, pady=5, sticky="e")
+        TabFormInfo.combobox = ctk.CTkComboBox(master=self.frame_organization_info,  width=165, values=["Embaixador Escudeiro", "Embaixador Arauto", "Embaixador Sênior", "Embaixador Emérito"])
+        TabFormInfo.combobox.grid(row=4, column=0, padx=20, pady=5, sticky="e")
 
-        self.entry_data_formatura = ctk.CTkEntry(master=self.frame_organization_info, width=150, state="disabled")
-        self.entry_data_formatura.grid(row=4, column=1, pady=5, padx=15, sticky="w")
+        TabFormInfo.entry_data_formatura = ctk.CTkEntry(master=self.frame_organization_info, width=150, state="disabled")
+        TabFormInfo.entry_data_formatura.grid(row=4, column=1, pady=5, padx=15, sticky="w")
 
         self.button_data_formatura = ctk.CTkButton(master=self.frame_organization_info, width=135, text="Selecionar Data", command=lambda: self.create_toplevel_date("formatura"))
         self.button_data_formatura.grid(row=4, column=2, pady=5, padx=15, sticky="e") 
 
+        # Observações
         self.label_infoER = ctk.CTkLabel(master=self.frame_organization_info, text="Observações")
         self.label_infoER.grid(row=5, column=0, columnspan=3, pady=(5, 15), padx=(15, 15), sticky="nwse")
 
-        self.textbox = ctk.CTkTextbox(master=self.frame_organization_info)
-        self.textbox.grid(row=6, column=0, columnspan=3, padx=20, pady=(5, 20), sticky="nsew")
+        TabFormInfo.textbox_org = ctk.CTkTextbox(master=self.frame_organization_info)
+        TabFormInfo.textbox_org.grid(row=6, column=0, columnspan=3, padx=20, pady=(5, 20), sticky="nsew")
+
 
     # ========== Functions - Class Tabview ===========
 
@@ -453,6 +458,7 @@ class Sidebar(ctk.CTkFrame):
         self.label = ctk.CTkLabel(self, text="Cadastrar ER", height=30, corner_radius=6, fg_color=("gray70", "gray25"), font=font_title)
         self.label.grid(row=0, column=0, padx=20, pady=10, sticky="ew")
 
+        # Buttons
         self.button_photo = ctk.CTkButton(master=self, image=self.photo_icon, text="Selecionar foto", width=100, height=80, border_width=2, corner_radius=10, compound="bottom", 
                                                        border_color="gray50", fg_color=("gray70", "gray25"), hover_color="gray25", command=self.select_image)
         self.button_photo.grid(row=1, column=0, padx=20, pady=10, sticky="ew")
@@ -467,6 +473,7 @@ class Sidebar(ctk.CTkFrame):
                                                         hover_color="gray25", command=quit)
         Sidebar.button_clean.grid(row=3, column=0, padx=20, pady=10, sticky="ew")
 
+        # Insígnia image and name
         self.insignia_label = ctk.CTkLabel(self, image=self.insignia_image, text="")
         self.insignia_label.grid(row=7, column=0, padx=0, pady=0, sticky="sew")
 
@@ -482,7 +489,7 @@ class Sidebar(ctk.CTkFrame):
                 
     def button_register(self):   
         
-        # User information
+        # ---------- ER - Tab --> Get information ------------
         nome_ER = TabFormInfo.entry_nome.get()
         nome_resp = TabFormInfo.entry_resp.get()
         data_nasc = TabFormInfo.entry_nasc.get()
@@ -520,9 +527,71 @@ class Sidebar(ctk.CTkFrame):
         for i in list_basic_info:
             if i=='':
                 messagebox.showerror('Erro', 'Preencha todos os campos e selecione uma imagem.')
-                return
+                return        
+
+        # ------  Chuch - Tab --> Get information --------- 
+        nome_igreja = TabFormInfo.entry_igreja.get()
+        igreja_batismo = TabFormInfo.entry_igreja_batismo.get()
+        data_batismo = TabFormInfo.entry_data_batismo.get()
+        membro_EBD = TabFormInfo.entry_EBD.get()
+        atividades = TabFormInfo.combobox_atividades.get()
+        outras_atividades = TabFormInfo.textbox_church.get('0.0', 'end')
+        atividades_igreja = TabFormInfo.entry_atividades_igreja.get()
+
+        # Church verification
+        if nome_igreja == '':
+            nome_igreja = 'Não é membro'
+
+        # Batism verification
+        if TabFormInfo.check_box_batizado.get() == 'disabled':
+            igreja_batismo = 'Não foi batizado'
+            data_batismo = '00/00/00'
+
+        # EBD verification
+        if membro_EBD == '':
+            info_EBD = 'Não participa'
+        else:
+            info_EBD = f'Participa na {membro_EBD}'
+
+        # Activities verification
+        if atividades == '':
+            info_atividades = 'Não participa'
+        elif atividades == 'Ministério Infantil' or 'Música':
+            info_atividades = f'Participa de {atividades} na {atividades_igreja}'
+        else:
+            info_atividades = f'Participa de {outras_atividades} na {atividades_igreja}'        
+
+        # List church information
+        list_church_info = [nome_ER, nome_igreja, igreja_batismo, data_batismo, info_EBD, info_atividades]             
+
+        # ------- Organization - Tab --> Get information ---------
+        data_ingresso = TabFormInfo.entry_data_ingresso.get()
+        data_aclamacao = TabFormInfo.entry_data_aclamacao.get()
+        data_formatura = TabFormInfo.entry_data_formatura.get()
+        posto = TabFormInfo.combobox.get()
+        observacao = TabFormInfo.textbox_org.get('0.0', 'end')
+
+        # Info verification
+        if data_ingresso == '':
+            messagebox.showerror('Erro', 'Informe a data da 1ª reunião que o ER participou.')
+            return        
+        if data_aclamacao == '':
+            data_aclamacao = '00/00/00'
+
+        if posto == 'Embaixador Escudeiro':
+            data_formatura = '00/00/00'        
         
+        if observacao == '\n':
+            observacao = 'Não há'
+
+        # List org information
+        list_org_info = [nome_ER, data_ingresso, data_aclamacao, posto, data_formatura, observacao]
+        
+        # ---------- Save the informations in BD tables ----------- 
         inserir_form(list_basic_info)
+        inserir_church(list_church_info)
+        inserir_org(list_org_info)
+
         messagebox.showinfo('Sucesso', 'Os dados foram inseridos com sucesso')
 
 
@@ -530,13 +599,17 @@ class App(ctk.CTk):
     def __init__(self):
         super().__init__()
               
-        self.title("Cadastro dos ER")
+        # Configure window       
+        self.title("Cadastro dos ER")                  
+        self.resizable(False, False)
 
+        # Add frames
         self.tab_view = TabFormInfo(master=self)
         self.tab_view.grid(row=0, column=1, padx=20, pady=20, sticky="nsew")
 
         self.sidebar_frame = Sidebar(master=self)
         self.sidebar_frame.grid(row=0, column=0, padx=20, pady=20, sticky="nsew")
+
 
 app = App()
 app.mainloop()
