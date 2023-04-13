@@ -470,7 +470,7 @@ class Sidebar(ctk.CTkFrame):
 
         Sidebar.button_clean = ctk.CTkButton(master=self, image=self.cancel_image, text="Cancelar", width=100, height=80, border_width=2,
                                                         corner_radius=10, compound="bottom", border_color="gray50", fg_color=("gray70", "gray25"),
-                                                        hover_color="gray25", command=quit)
+                                                        hover_color="gray25", command=cancel)
         Sidebar.button_clean.grid(row=3, column=0, padx=20, pady=10, sticky="ew")
 
         # Insígnia image and name
@@ -610,6 +610,8 @@ class App(ctk.CTk):
         self.sidebar_frame = Sidebar(master=self)
         self.sidebar_frame.grid(row=0, column=0, padx=20, pady=20, sticky="nsew")
 
+def cancel():
+    app.destroy()
 
 app = App()
 app.mainloop()
