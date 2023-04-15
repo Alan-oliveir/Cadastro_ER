@@ -41,6 +41,9 @@ O programa foi desenvolvido para ser usado no Windows. Baixe o arquivo cadastro.
 - Pillow
 - Request
 
+## API
+- Via Cep
+
 ## Banco de dados
 - SQLite
 
