@@ -51,7 +51,7 @@ O programa foi desenvolvido para ser usado no Windows. Baixe o arquivo cadastro.
 
 Alan de Oliveira Gonçalves
 
-[Linkedin](www.linkedin.com/in/alan-de-oliveira-gonçalves-207549258)
+- Linkedin: www.linkedin.com/in/alan-de-oliveira-gonçalves-207549258
 
 ### Créditos das imagens: 
 - Icon made by Karacis from www.flaticon.com
