@@ -10,7 +10,7 @@ Na interface de usuário foi utilizada a biblioteca customtkinter. CustomTkinter
 
 O banco de dados utilizado foi o SQLite. SQLite é uma base de dados relacional de código aberto e que dispensa o uso de um servidor na sua atuação, armazenando seus arquivos dentro de sua própria estrutura.
 
-## Layout 
+# Layout 
 
 - Cadastrar novo embaixador do Rei
 
@@ -47,12 +47,11 @@ O programa foi desenvolvido para ser usado no Windows. Baixe o arquivo cadastro.
 ## Banco de dados
 - SQLite
 
-### Créditos imagens
-
-"Icon made by Karacis from www.flaticon.com"
-
 # Autor
 
 Alan de Oliveira Gonçalves
 
 [Linkedin](www.linkedin.com/in/alan-de-oliveira-gonçalves-207549258)
+
+### Créditos das imagens: 
+- Icon made by Karacis from www.flaticon.com
