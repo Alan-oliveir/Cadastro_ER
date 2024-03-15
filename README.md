@@ -2,7 +2,7 @@
 
 [![NPM](https://img.shields.io/npm/l/react)](https://github.com/Alan-oliveir/Cadastro_ER/blob/main/LICENSE)
 
-Programa utilizado para cadastrar os Embaixadores do Rei da embaixada Pra. Edson Pereira Messor, da Quarta Igreja Batista em Nilópolis.
+Programa utilizado para cadastrar os Embaixadores do Rei da embaixada Pr. Edson Pereira Messor, da Quarta Igreja Batista em Nilópolis.
 
 # Sobre o projeto
 
