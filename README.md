@@ -47,11 +47,12 @@ O programa foi desenvolvido para ser usado no Windows. Baixe o arquivo cadastro.
 ## Banco de dados
 - SQLite
 
-# Autor
-
-Alan de Oliveira Gonçalves
-
-- Linkedin: www.linkedin.com/in/alan-de-oliveira-gonçalves-207549258
-
-### Créditos das imagens: 
+## Créditos das imagens: 
 - Icon made by Karacis from www.flaticon.com
+
+___
+## Contato
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/alan-ogoncalves/) 
+
+
+
